@@ -1,6 +1,8 @@
-import React from "react"
-import { Form, Input, Icon, Button } from "antd"
-import "./index.scss"
+import React from 'react'
+import { Form, Input, Icon, Button, message } from 'antd'
+import './index.scss'
+import Axios from 'axios'
+import qs from 'qs'
 
 class Login extends React.Component {
     // eslint-disable-next-line
@@ -12,10 +14,21 @@ class Login extends React.Component {
         e.preventDefault()
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values)
-                if (values.password === "123") {
-                    this.props.history.push("/homepage")
-                }
+                // login(values).then(res => {
+                //     console.log(res)
+                // })
+                Axios.post(
+                    'http://localhost:3001/login',
+                    qs.stringify(values)
+                ).then(res => {
+                    const data = res.data
+                    if (data.code === 0) {
+                        message.success('登陆成功！')
+                        this.props.history.push('/homepage')
+                    } else {
+                        message.error('用户名或密码错误！')
+                    }
+                })
             }
         })
     }
@@ -27,11 +40,11 @@ class Login extends React.Component {
                 <section className="login_box">
                     <Form onSubmit={this.handleSubmit}>
                         <Form.Item>
-                            {getFieldDecorator("username", {
+                            {getFieldDecorator('username', {
                                 rules: [
                                     {
                                         required: true,
-                                        message: "Please input your username!"
+                                        message: 'Please input your username!'
                                     }
                                 ]
                             })(
@@ -39,7 +52,7 @@ class Login extends React.Component {
                                     prefix={
                                         <Icon
                                             type="user"
-                                            style={{ color: "rgba(0,0,0,.25)" }}
+                                            style={{ color: 'rgba(0,0,0,.25)' }}
                                         />
                                     }
                                     placeholder="Username"
@@ -47,11 +60,11 @@ class Login extends React.Component {
                             )}
                         </Form.Item>
                         <Form.Item>
-                            {getFieldDecorator("password", {
+                            {getFieldDecorator('password', {
                                 rules: [
                                     {
                                         required: true,
-                                        message: "Please input your Password!"
+                                        message: 'Please input your Password!'
                                     }
                                 ]
                             })(
@@ -59,7 +72,7 @@ class Login extends React.Component {
                                     prefix={
                                         <Icon
                                             type="lock"
-                                            style={{ color: "rgba(0,0,0,.25)" }}
+                                            style={{ color: 'rgba(0,0,0,.25)' }}
                                         />
                                     }
                                     type="password"

@@ -1,13 +1,11 @@
-import React from "react"
-import { Form, Input } from "antd"
-import "./index.scss"
+import React, { useState } from 'react'
+import { Form, Input, Button } from 'antd'
+import './index.scss'
 
-class HomePage extends React.Component {
-    // eslint-disable-next-line
-    constructor(props) {
-        super(props)
-    }
-    handleSubmit = e => {
+const HomePage = props => {
+    const [site, setSite] = useState(null)
+    const [address, setAddress] = useState(null)
+    const handleSubmit = e => {
         e.preventDefault()
         this.props.form.validateFields((err, values) => {
             if (!err) {
@@ -15,22 +13,46 @@ class HomePage extends React.Component {
             }
         })
     }
-    render() {
-        const { getFieldDecorator } = this.props.form
-        return (
-            <div className="home-page">
-                <Form obSubmit={this.handleSubmit}>
+    const handleGetInfo = () => {
+        console.log(site)
+        console.log(address)
+    }
+    const { getFieldDecorator } = props.form
+    return (
+        <div className="home-page">
+            <section className="box">
+                <Form onSubmit={handleSubmit}>
                     <Form.Item>
-                        {getFieldDecorator("sitename", {
+                        {getFieldDecorator('sitename', {
                             rules: [
-                                { required: true, message: "请输入网站名称！" }
+                                { required: true, message: '请输入网站名称！' }
                             ]
                         })(<Input />)}
                     </Form.Item>
+                    <Form.Item>
+                        {getFieldDecorator('address', {
+                            rules: [{ required: true, message: '请输入网址！' }]
+                        })(<Input />)}
+                    </Form.Item>
+                    <Form.Item>
+                        <Button
+                            block
+                            type="primary"
+                            htmlType="submit"
+                            className="login-form-button"
+                        >
+                            保存
+                        </Button>
+                    </Form.Item>
                 </Form>
-            </div>
-        )
-    }
+            </section>
+            <section className="box">
+                <div>网站：{site}</div>
+                <div>网址：{address}</div>
+                <Button onClick={handleGetInfo}>get</Button>
+            </section>
+        </div>
+    )
 }
 
-export default HomePage
+export default Form.create({})(HomePage)
