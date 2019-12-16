@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Form, Input, Button } from 'antd'
+import { Form, Input, Button, Layout } from 'antd'
 import './index.scss'
 
+const { Header, Footer, Sider, Content } = Layout
 const HomePage = props => {
     const [site, setSite] = useState(null)
     const [address, setAddress] = useState(null)
@@ -20,7 +21,14 @@ const HomePage = props => {
     const { getFieldDecorator } = props.form
     return (
         <div className="home-page">
-            <section className="box">
+            <Layout>
+                <Sider>Sider</Sider>
+                <Layout>
+                    <Header>Header</Header>
+                    <Content>Content</Content>
+                </Layout>
+            </Layout>
+            {/* <section className="box">
                 <Form onSubmit={handleSubmit}>
                     <Form.Item>
                         {getFieldDecorator('sitename', {
@@ -50,7 +58,7 @@ const HomePage = props => {
                 <div>网站：{site}</div>
                 <div>网址：{address}</div>
                 <Button onClick={handleGetInfo}>get</Button>
-            </section>
+            </section> */}
         </div>
     )
 }

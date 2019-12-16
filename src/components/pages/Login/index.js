@@ -1,8 +1,10 @@
 import React from 'react'
-import { Form, Input, Icon, Button, message } from 'antd'
+import { Link } from 'react-router-dom'
+import { Form, Input, Icon, Button, Checkbox, message } from 'antd'
 import './index.scss'
 import Axios from 'axios'
 import qs from 'qs'
+// import { login } from '../../../utils/request'
 
 class Login extends React.Component {
     // eslint-disable-next-line
@@ -81,6 +83,13 @@ class Login extends React.Component {
                             )}
                         </Form.Item>
                         <Form.Item>
+                            {getFieldDecorator('remember', {
+                                valuePropName: 'checked',
+                                initialValue: true
+                            })(<Checkbox>记住我</Checkbox>)}
+                            <a className="login-form-forgot" href="/">
+                                忘记密码
+                            </a>
                             <Button
                                 block
                                 type="primary"
@@ -89,6 +98,7 @@ class Login extends React.Component {
                             >
                                 登录
                             </Button>
+                            <Link to="/register">注册账号</Link>
                         </Form.Item>
                     </Form>
                 </section>

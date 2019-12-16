@@ -3,6 +3,10 @@ const request = axios.create({
     baseURL: 'http://localhost:3001'
 })
 
+request.interceptors.request.use(config => {
+    return config
+})
+
 request.interceptors.request.use(
     response => {
         return response.data
