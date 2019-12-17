@@ -24,11 +24,13 @@ class Login extends React.Component {
                     qs.stringify(values)
                 ).then(res => {
                     const data = res.data
+                    console.log(res)
+                    const mes = data.message
                     if (data.code === 0) {
-                        message.success('登陆成功！')
+                        message.success(mes)
                         this.props.history.push('/homepage')
                     } else {
-                        message.error('用户名或密码错误！')
+                        message.error(mes)
                     }
                 })
             }
@@ -46,7 +48,7 @@ class Login extends React.Component {
                                 rules: [
                                     {
                                         required: true,
-                                        message: 'Please input your username!'
+                                        message: '请输入用户名!'
                                     }
                                 ]
                             })(
@@ -66,7 +68,7 @@ class Login extends React.Component {
                                 rules: [
                                     {
                                         required: true,
-                                        message: 'Please input your Password!'
+                                        message: '请输入密码!'
                                     }
                                 ]
                             })(

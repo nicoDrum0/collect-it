@@ -1,5 +1,5 @@
 .home-page {
-    height: inherit;
+    height: 100%;
     background-color: bisque;
     display: flex;
     justify-content: center;
@@ -16,10 +16,26 @@
 
         .ant-layout-sider {
             background-color: #1D223A;
-        }
-    }
 
-    .box {
-        width: 600px;
+            .btn_box {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .ant-tree {
+                color: #fff;
+                opacity: 0.8;
+
+                .ant-tree-title {
+                    color: #fff;
+                    opacity: 0.8;
+                }
+
+                .anticon {
+                    color: #fff;
+                    opacity: 0.8;
+                }
+            }
+        }
     }
 }

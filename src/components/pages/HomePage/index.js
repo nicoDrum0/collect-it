@@ -1,66 +1,73 @@
 import React, { useState } from 'react'
-import { Form, Input, Button, Layout } from 'antd'
+import { Button, Layout, Modal } from 'antd'
 import './index.scss'
+import TreeCatalog from '../../TreeCatalog'
+import { treeData } from '../../../utils/data'
+import Scrollbars from 'react-custom-scrollbars'
+import { renderThumbVertical } from '../../../utils/utils'
+import emitter from '../../../utils/event'
+import AddModal from '../../AddModal'
 
-const { Header, Footer, Sider, Content } = Layout
+const { Header, Sider, Content } = Layout
 const HomePage = props => {
-    const [site, setSite] = useState(null)
-    const [address, setAddress] = useState(null)
-    const handleSubmit = e => {
-        e.preventDefault()
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log(values)
-            }
-        })
+    const [visible, setVisible] = useState(false)
+    const showModal = () => {
+        setVisible(true)
     }
-    const handleGetInfo = () => {
-        console.log(site)
-        console.log(address)
+    const handleOk = e => {
+        emitter.emit('submit', e)
+        setVisible(false)
     }
-    const { getFieldDecorator } = props.form
+    const handleCancel = e => {
+        setVisible(false)
+    }
     return (
         <div className="home-page">
             <Layout>
-                <Sider>Sider</Sider>
+                <Sider>
+                    <Header>Collect</Header>
+                    <Scrollbars
+                        autoHide
+                        style={{ height: `calc(100% - 64px)` }}
+                        renderThumbVertical={renderThumbVertical}
+                    >
+                        <TreeCatalog data={treeData} />
+                        <div className="btn_box">
+                            <Button
+                                shape="round"
+                                type="primary"
+                                block
+                                onClick={showModal}
+                            >
+                                添加
+                            </Button>
+                            <Modal
+                                title="添加网址"
+                                visible={visible}
+                                onOk={handleOk}
+                                onCancel={handleCancel}
+                                okText="确定"
+                                cancelText="取消"
+                            >
+                                <AddModal />
+                            </Modal>
+                        </div>
+                    </Scrollbars>
+                </Sider>
                 <Layout>
-                    <Header>Header</Header>
-                    <Content>Content</Content>
+                    <Header></Header>
+                    <Content>
+                        <Scrollbars
+                            autoHide
+                            renderThumbVertical={renderThumbVertical}
+                        >
+                            Content
+                        </Scrollbars>
+                    </Content>
                 </Layout>
             </Layout>
-            {/* <section className="box">
-                <Form onSubmit={handleSubmit}>
-                    <Form.Item>
-                        {getFieldDecorator('sitename', {
-                            rules: [
-                                { required: true, message: '请输入网站名称！' }
-                            ]
-                        })(<Input />)}
-                    </Form.Item>
-                    <Form.Item>
-                        {getFieldDecorator('address', {
-                            rules: [{ required: true, message: '请输入网址！' }]
-                        })(<Input />)}
-                    </Form.Item>
-                    <Form.Item>
-                        <Button
-                            block
-                            type="primary"
-                            htmlType="submit"
-                            className="login-form-button"
-                        >
-                            保存
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </section>
-            <section className="box">
-                <div>网站：{site}</div>
-                <div>网址：{address}</div>
-                <Button onClick={handleGetInfo}>get</Button>
-            </section> */}
         </div>
     )
 }
 
-export default Form.create({})(HomePage)
+export default HomePage
