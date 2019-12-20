@@ -1,0 +1,45 @@
+.menu_list {
+    color: rgba(0, 0, 0, 0.65);
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1050;
+    padding: 4px 0;
+    text-align: left;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    outline: none;
+
+    .menu_item {
+        padding: 5px 12px;
+        color: rgba(0, 0, 0, 0.65);
+        font-weight: normal;
+        white-space: nowrap;
+        border: 0.5px solid;
+        border-color: rgba(170, 170, 170, 0.3);
+        cursor: pointer;
+
+        &:first-child {
+            border-top: none;
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        &:hover {
+            background-color: #e6f7ff;
+        }
+
+        &.disabled {
+            color: rgba(0, 0, 0, 0.25);
+            cursor: not-allowed;
+
+            &:hover {
+                background-color: #fff;
+            }
+        }
+    }
+
+}
