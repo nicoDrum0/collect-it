@@ -1,15 +1,22 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 import { Form, Input, Icon, Button, Checkbox, message } from 'antd'
 import './index.scss'
 import Axios from 'axios'
 import qs from 'qs'
+import { setFolder } from '../../../redux/actions/user'
 // import { login } from '../../../utils/request'
 
 class Login extends React.Component {
     // eslint-disable-next-line
     constructor(props) {
         super(props)
+        this.folder = []
+    }
+
+    componentDidMount() {
+        this.Input.input.focus()
     }
 
     handleSubmit = e => {
@@ -24,9 +31,11 @@ class Login extends React.Component {
                     qs.stringify(values)
                 ).then(res => {
                     const data = res.data
-                    console.log(res)
                     const mes = data.message
+                    const _data = data.data
                     if (data.code === 0) {
+                        this.folder.push(_data.folder)
+                        this.props.setFolder(this.folder)
                         message.success(mes)
                         this.props.history.push('/homepage')
                     } else {
@@ -60,6 +69,7 @@ class Login extends React.Component {
                                         />
                                     }
                                     placeholder="Username"
+                                    ref={Input => (this.Input = Input)}
                                 />
                             )}
                         </Form.Item>
@@ -109,4 +119,14 @@ class Login extends React.Component {
     }
 }
 
-export default Form.create({})(Login)
+const _Login = Form.create({})(Login)
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setFolder: folder => {
+            dispatch(setFolder(folder))
+        }
+    }
+}
+
+export default connect(null, mapDispatchToProps)(_Login)

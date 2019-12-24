@@ -6,7 +6,7 @@ import HomePage from '../components/pages/HomePage'
 
 const MainRouter = () => (
     <Router>
-        <Redirect from={'/'} to={'/homepage'} />
+        <Redirect from={'/'} to={'/login'} />
         <Route exact path={'/login'} component={Login} />
         <Route exact path={'/register'} component={Register} />
         <Route exact path={'/homepage'} component={HomePage} />

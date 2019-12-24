@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Layout, Modal, Form, Input, message } from 'antd'
 import './index.scss'
+import { connect } from 'react-redux'
 import TreeCatalog from '../../TreeCatalog'
-import { treeData } from '../../../utils/data'
 import Scrollbars from 'react-custom-scrollbars'
 import { renderThumbVertical } from '../../../utils/utils'
 import emitter from '../../../utils/event'
@@ -64,7 +64,7 @@ const HomePage = props => {
                         style={{ height: `calc(100% - 64px)` }}
                         renderThumbVertical={renderThumbVertical}
                     >
-                        <TreeCatalog data={treeData} />
+                        <TreeCatalog data={props.folder} />
                         <div className="btn_box">
                             <Button
                                 shape="round"
@@ -131,4 +131,11 @@ const HomePage = props => {
     )
 }
 
-export default Form.create({})(HomePage)
+const _HomePage = Form.create({})(HomePage)
+const mapStateToProps = ({ user }) => {
+    return {
+        folder: user.folder
+    }
+}
+
+export default connect(mapStateToProps)(_HomePage)

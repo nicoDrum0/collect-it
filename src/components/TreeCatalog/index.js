@@ -1,5 +1,6 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { Tree, Modal, Form, Input } from 'antd'
+import { connect } from 'react-redux'
 import emitter from '../../utils/event'
 import './index.scss'
 
@@ -106,7 +107,8 @@ class TreeCatalog extends React.Component {
         }
     }
     handleSelect = (selectedKeys, info) => {
-        // console.log(info)
+        const { node } = info
+        console.log(node.props.children)
     }
     handleRenameOk = () => {
         // console.log(object)
@@ -116,13 +118,42 @@ class TreeCatalog extends React.Component {
             renameVisible: false
         })
     }
+    renderRenameModal = () => {
+        if (!this.state.renameVisible) {
+            return null
+        }
 
+        const { getFieldDecorator } = this.props.form
+        return (
+            <Modal
+                title="修改名称"
+                visible={this.state.renameVisible}
+                maskClosable={false}
+                onOk={this.handleRenameOk}
+                onCancel={this.handleRenameCancel}
+                okText="确定"
+                cancelText="取消"
+            >
+                <Form {...formItemLayout}>
+                    <Form.Item label="名称">
+                        {getFieldDecorator('rename', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '名称不能为空！'
+                                }
+                            ]
+                        })(<Input />)}
+                    </Form.Item>
+                </Form>
+            </Modal>
+        )
+    }
     renderContextMenuTpl = () => {
         if (!this.state.visible) {
             return null
         }
 
-        const { getFieldDecorator } = this.props.form
         return (
             <div className="menu_list" style={this.state.menuStyle}>
                 {this.state.menuList.map((item, i) => {
@@ -138,28 +169,7 @@ class TreeCatalog extends React.Component {
                         </div>
                     )
                 })}
-                <Modal
-                    title="修改名称"
-                    visible={this.state.renameVisible}
-                    maskClosable={false}
-                    onOk={this.handleRenameOk}
-                    onCancel={this.handleRenameCancel}
-                    okText="确定"
-                    cancelText="取消"
-                >
-                    <Form {...formItemLayout}>
-                        <Form.Item label="名称">
-                            {getFieldDecorator('rename', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '名称不能为空！'
-                                    }
-                                ]
-                            })(<Input />)}
-                        </Form.Item>
-                    </Form>
-                </Modal>
+                {this.renderRenameModal()}
             </div>
         )
     }
@@ -177,4 +187,6 @@ class TreeCatalog extends React.Component {
     }
 }
 
-export default Form.create({})(TreeCatalog)
+const _TreeCatalog = Form.create({})(TreeCatalog)
+
+export default connect()(_TreeCatalog)

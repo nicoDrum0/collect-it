@@ -1,17 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import Axios from 'axios'
+import React, { useState } from 'react'
 import './index.scss'
 
 const SiteStore = props => {
     const [siteList, setSiteList] = useState([])
-    const getSiteList = () => {
-        Axios.get('http://localhost:3001/site').then(res => {
-            const data = res.data
-            if (data.code === 0) {
-                setSiteList(data.data)
-            }
-        })
-    }
+    const getSiteList = () => {}
     const handleUrl = url => {
         const prefix1 = 'https://'
         const prefix2 = 'http://'
@@ -22,10 +14,6 @@ const SiteStore = props => {
             return url
         }
     }
-    useEffect(() => {
-        getSiteList()
-        // eslint-disable-next-line
-    }, [])
     return (
         <div className="site_box">
             {siteList.map((item, i) => {
