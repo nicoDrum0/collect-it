@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Button, Layout, Modal, Form, Input, message } from 'antd'
 import './index.scss'
 import { connect } from 'react-redux'
@@ -8,7 +8,7 @@ import { renderThumbVertical } from '../../../utils/utils'
 import emitter from '../../../utils/event'
 import Axios from 'axios'
 import qs from 'qs'
-import SiteStore from '../../SiteStroe'
+import SiteStore from '../../SiteStore'
 
 const { Header, Sider, Content } = Layout
 const HomePage = props => {
@@ -24,15 +24,19 @@ const HomePage = props => {
                 Axios.post(
                     'http://localhost:3001/postSite',
                     qs.stringify(values)
-                ).then(res => {
-                    const data = res.data
-                    if (data.code === 0) {
-                        message.success(data.message)
-                        setVisible(false)
-                    } else {
-                        message.warning(data.message)
-                    }
-                })
+                )
+                    .then(res => {
+                        const data = res.data
+                        if (data.code === 0) {
+                            message.success(data.message)
+                            setVisible(false)
+                        } else {
+                            message.warning(data.message)
+                        }
+                    })
+                    .catch(err => {
+                        message.warning(err)
+                    })
             }
         })
     }
@@ -72,10 +76,10 @@ const HomePage = props => {
                                 block
                                 onClick={showModal}
                             >
-                                添加
+                                添加文件夹
                             </Button>
                             <Modal
-                                title="添加网址"
+                                title="新建文件夹"
                                 visible={visible}
                                 maskClosable={false}
                                 onOk={handleOk}
@@ -88,27 +92,18 @@ const HomePage = props => {
                                     labelAlign="left"
                                     {...formItemLayout}
                                 >
-                                    <Form.Item label="网站名称">
+                                    <Form.Item label="名称">
                                         {getFieldDecorator('sitename', {
                                             rules: [
                                                 {
                                                     required: true,
-                                                    message: '请输入网站名称！'
+                                                    message:
+                                                        '请输入文件夹名称！'
                                                 }
                                             ]
                                         })(
-                                            <Input placeholder="请输入网站名称" />
+                                            <Input placeholder="请输入文件夹名称" />
                                         )}
-                                    </Form.Item>
-                                    <Form.Item label="网址">
-                                        {getFieldDecorator('address', {
-                                            rules: [
-                                                {
-                                                    required: true,
-                                                    message: '请输入网址！'
-                                                }
-                                            ]
-                                        })(<Input placeholder="请输入网址" />)}
                                     </Form.Item>
                                 </Form>
                             </Modal>

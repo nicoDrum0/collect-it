@@ -12,7 +12,6 @@ class Login extends React.Component {
     // eslint-disable-next-line
     constructor(props) {
         super(props)
-        this.folder = []
     }
 
     componentDidMount() {
@@ -26,22 +25,22 @@ class Login extends React.Component {
                 // login(values).then(res => {
                 //     console.log(res)
                 // })
-                Axios.post(
-                    'http://localhost:3001/login',
-                    qs.stringify(values)
-                ).then(res => {
-                    const data = res.data
-                    const mes = data.message
-                    const _data = data.data
-                    if (data.code === 0) {
-                        this.folder.push(_data.folder)
-                        this.props.setFolder(this.folder)
-                        message.success(mes)
-                        this.props.history.push('/homepage')
-                    } else {
-                        message.error(mes)
-                    }
-                })
+                Axios.post('http://localhost:3001/login', qs.stringify(values))
+                    .then(res => {
+                        const data = res.data
+                        const mes = data.message
+                        const _data = data.data
+                        if (data.code === 0) {
+                            this.props.setFolder(_data.folder)
+                            message.success(mes)
+                            this.props.history.push('/homepage')
+                        } else {
+                            message.error(mes)
+                        }
+                    })
+                    .catch(err => {
+                        message.warning(err)
+                    })
             }
         })
     }

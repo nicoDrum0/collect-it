@@ -3,17 +3,18 @@ import { Tree, Modal, Form, Input } from 'antd'
 import { connect } from 'react-redux'
 import emitter from '../../utils/event'
 import './index.scss'
+import { handleUrlSplicing } from '../../utils/utils'
+import { setSiteStore } from '../../redux/actions/site'
 
-const { DirectoryTree } = Tree
+const { DirectoryTree, TreeNode } = Tree
 const contextMenus = [
-    { title: '添加文件夹', type: 0 },
-    { title: '添加网址', type: 1 },
-    { title: '重命名', type: 2 },
-    { title: '删除', type: 3 }
+    { title: '添加网址', type: 0 },
+    { title: '重命名', type: 1 },
+    { title: '删除', type: 2 }
 ]
 const contextMenu = [
-    { title: '重命名', type: 2 },
-    { title: '删除', type: 3 }
+    { title: '重命名', type: 1 },
+    { title: '删除', type: 2 }
 ]
 const formItemLayout = {
     labelCol: {
@@ -52,7 +53,8 @@ class TreeCatalog extends React.Component {
     }
     handleRightClick = ({ event, node }) => {
         const { props } = node
-        if (!props.children.length) {
+        console.log(props)
+        if (!props.children) {
             this.setState({
                 menuList: contextMenu
             })
@@ -94,12 +96,12 @@ class TreeCatalog extends React.Component {
         })
     }
     handleClick = type => {
-        console.log(type)
+        // console.log(type)
         switch (type) {
-            case 2:
+            case 1:
                 this.showRenameModal()
                 break
-            case 3:
+            case 2:
                 this.showDelConfirmModal()
                 break
             default:
@@ -107,8 +109,15 @@ class TreeCatalog extends React.Component {
         }
     }
     handleSelect = (selectedKeys, info) => {
-        const { node } = info
-        console.log(node.props.children)
+        console.log(selectedKeys)
+        const { dataRef } = info.node.props
+        if (dataRef.address) {
+            const _url = handleUrlSplicing(dataRef.address)
+            window.open(_url)
+        } else {
+            const arr = dataRef.children
+            this.props.setSiteStore(arr)
+        }
     }
     handleRenameOk = () => {
         // console.log(object)
@@ -173,14 +182,38 @@ class TreeCatalog extends React.Component {
             </div>
         )
     }
+    renderTree = data => {
+        // console.log(data)
+        const result = data.map(item => {
+            if (item.children) {
+                return (
+                    <TreeNode title={item.title} key={item.key} dataRef={item}>
+                        {this.renderTree(item.children)}
+                    </TreeNode>
+                )
+            }
+
+            return (
+                <TreeNode
+                    title={item.title}
+                    key={item.key}
+                    dataRef={item}
+                    isLeaf={item.isLeaf}
+                />
+            )
+        })
+
+        return result
+    }
     render() {
         return (
             <Fragment>
                 <DirectoryTree
-                    treeData={this.props.data}
                     onSelect={this.handleSelect}
                     onRightClick={this.handleRightClick}
-                />
+                >
+                    {this.renderTree(this.props.folder)}
+                </DirectoryTree>
                 {this.renderContextMenuTpl()}
             </Fragment>
         )
@@ -189,4 +222,18 @@ class TreeCatalog extends React.Component {
 
 const _TreeCatalog = Form.create({})(TreeCatalog)
 
-export default connect()(_TreeCatalog)
+const mapDispatchToProps = dispatch => {
+    return {
+        setSiteStore: val => {
+            dispatch(setSiteStore(val))
+        }
+    }
+}
+
+const mapStateToProps = ({ user }) => {
+    return {
+        folder: user.folder
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(_TreeCatalog)
