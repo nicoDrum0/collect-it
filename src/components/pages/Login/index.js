@@ -5,7 +5,7 @@ import { Form, Input, Icon, Button, Checkbox, message } from 'antd'
 import './index.scss'
 import Axios from 'axios'
 import qs from 'qs'
-import { setFolder } from '../../../redux/actions/user'
+import { setFolder, setUserId } from '../../../redux/actions/user'
 // import { login } from '../../../utils/request'
 
 class Login extends React.Component {
@@ -31,6 +31,7 @@ class Login extends React.Component {
                         const mes = data.message
                         const _data = data.data
                         if (data.code === 0) {
+                            this.props.setUserId(_data.id)
                             this.props.setFolder(_data.folder)
                             message.success(mes)
                             this.props.history.push('/homepage')
@@ -124,6 +125,9 @@ const mapDispatchToProps = dispatch => {
     return {
         setFolder: folder => {
             dispatch(setFolder(folder))
+        },
+        setUserId: id => {
+            dispatch(setUserId(id))
         }
     }
 }

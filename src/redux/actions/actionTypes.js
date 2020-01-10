@@ -1,3 +1,6 @@
 export const SET_FOLDER = 'SET_FOLDER'
 export const SET_TREE_DATA = 'SET_TREE_DATA'
 export const SET_SITE_STORE = 'SET_SITE_STORE'
+export const SET_USER_ID = 'SET_USER_ID'
+export const TOGGLE_RENAME_MODAL = 'TOGGLE_RENAME_MODAL'
+export const TOGGLE_ADD_SITE_MODAL = 'TOGGLE_ADD_SITE_MODAL'

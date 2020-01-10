@@ -9,6 +9,7 @@ import emitter from '../../../utils/event'
 import Axios from 'axios'
 import qs from 'qs'
 import SiteStore from '../../SiteStore'
+import { setFolder } from '../../../redux/actions/user'
 
 const { Header, Sider, Content } = Layout
 const HomePage = props => {
@@ -20,15 +21,17 @@ const HomePage = props => {
     const handleOk = e => {
         props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values)
+                values.id = props.userId
                 Axios.post(
                     'http://localhost:3001/postSite',
                     qs.stringify(values)
                 )
                     .then(res => {
                         const data = res.data
+                        console.log(data)
                         if (data.code === 0) {
                             message.success(data.message)
+                            props.setFolder(data.folder)
                             setVisible(false)
                         } else {
                             message.warning(data.message)
@@ -93,7 +96,7 @@ const HomePage = props => {
                                     {...formItemLayout}
                                 >
                                     <Form.Item label="名称">
-                                        {getFieldDecorator('sitename', {
+                                        {getFieldDecorator('foldername', {
                                             rules: [
                                                 {
                                                     required: true,
@@ -129,8 +132,17 @@ const HomePage = props => {
 const _HomePage = Form.create({})(HomePage)
 const mapStateToProps = ({ user }) => {
     return {
-        folder: user.folder
+        folder: user.folder,
+        userId: user.userId
     }
 }
 
-export default connect(mapStateToProps)(_HomePage)
+const mapDispatchToProps = dispatch => {
+    return {
+        setFolder: folder => {
+            dispatch(setFolder(folder))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(_HomePage)

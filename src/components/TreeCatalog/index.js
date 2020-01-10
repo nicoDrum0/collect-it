@@ -1,10 +1,13 @@
 import React, { Fragment } from 'react'
-import { Tree, Modal, Form, Input } from 'antd'
+import { Tree, Modal, Form, Input, message } from 'antd'
 import { connect } from 'react-redux'
 import emitter from '../../utils/event'
 import './index.scss'
 import { handleUrlSplicing } from '../../utils/utils'
 import { setSiteStore } from '../../redux/actions/site'
+import Axios from 'axios'
+import qs from 'qs'
+import { setFolder } from '../../redux/actions/user'
 
 const { DirectoryTree, TreeNode } = Tree
 const contextMenus = [
@@ -33,8 +36,10 @@ class TreeCatalog extends React.Component {
         this.state = {
             visible: false,
             renameVisible: false,
+            addVisible: false,
             menuList: [],
-            menuStyle: null
+            menuStyle: null,
+            eventKey: null
         }
     }
     componentDidMount() {
@@ -53,7 +58,10 @@ class TreeCatalog extends React.Component {
     }
     handleRightClick = ({ event, node }) => {
         const { props } = node
-        console.log(props)
+        // console.log(props)
+        this.setState({
+            eventKey: props.eventKey
+        })
         if (!props.children) {
             this.setState({
                 menuList: contextMenu
@@ -81,6 +89,7 @@ class TreeCatalog extends React.Component {
         })
     }
     showDelConfirmModal = () => {
+        const _this = this
         Modal.confirm({
             title: '友情提示',
             content: '确认删除？',
@@ -88,16 +97,42 @@ class TreeCatalog extends React.Component {
             okType: 'danger',
             cancelText: '取消',
             onOk() {
-                console.log('OK')
+                console.log(_this.state.eventKey)
+                const eventKey = _this.state.eventKey
+                Axios.post(
+                    'http://localhost:3001/delFolder',
+                    qs.stringify({
+                        eventKey,
+                        id: _this.props.userId
+                    })
+                )
+                    .then(res => {
+                        const data = res.data
+                        if (data.code === 0) {
+                            _this.props.setFolder(data.folder)
+                            message.success(data.message)
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
             },
             onCancel() {
                 console.log('Cancel')
             }
         })
     }
+    showAddSiteModal = () => {
+        this.props.form.resetFields()
+        this.setState({
+            addVisible: true
+        })
+    }
     handleClick = type => {
-        // console.log(type)
         switch (type) {
+            case 0:
+                this.showAddSiteModal()
+                break
             case 1:
                 this.showRenameModal()
                 break
@@ -107,6 +142,9 @@ class TreeCatalog extends React.Component {
             default:
                 return
         }
+        this.setState({
+            visible: false
+        })
     }
     handleSelect = (selectedKeys, info) => {
         console.log(selectedKeys)
@@ -118,6 +156,49 @@ class TreeCatalog extends React.Component {
             const arr = dataRef.children
             this.props.setSiteStore(arr)
         }
+    }
+    handleAddSiteOk = () => {}
+    handleAddSiteCancel = () => {}
+    renderAddSiteModal = () => {
+        if (!this.state.addVisible) {
+            return null
+        }
+
+        const { getFieldDecorator } = this.props.form
+        return (
+            <Modal
+                title="添加网址"
+                visible={this.state.addVisible}
+                maskClosable={false}
+                onOk={this.handleAddSiteOk}
+                onCancel={this.handleAddSiteCancel}
+                okText="确定"
+                cancelText="取消"
+            >
+                <Form {...formItemLayout}>
+                    <Form.Item label="名称">
+                        {getFieldDecorator('sitename', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '网站名称不能为空！'
+                                }
+                            ]
+                        })(<Input />)}
+                    </Form.Item>
+                    <Form.Item label="网址">
+                        {getFieldDecorator('address', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '网址不能为空！'
+                                }
+                            ]
+                        })(<Input />)}
+                    </Form.Item>
+                </Form>
+            </Modal>
+        )
     }
     handleRenameOk = () => {
         // console.log(object)
@@ -179,6 +260,7 @@ class TreeCatalog extends React.Component {
                     )
                 })}
                 {this.renderRenameModal()}
+                {this.renderAddSiteModal()}
             </div>
         )
     }
@@ -226,13 +308,17 @@ const mapDispatchToProps = dispatch => {
     return {
         setSiteStore: val => {
             dispatch(setSiteStore(val))
+        },
+        setFolder: folder => {
+            dispatch(setFolder(folder))
         }
     }
 }
 
 const mapStateToProps = ({ user }) => {
     return {
-        folder: user.folder
+        folder: user.folder,
+        userId: user.userId
     }
 }
 
