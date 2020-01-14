@@ -33,6 +33,11 @@ class Login extends React.Component {
                         if (data.code === 0) {
                             this.props.setUserId(_data.id)
                             this.props.setFolder(_data.folder)
+                            localStorage.setItem('userId', _data.id)
+                            localStorage.setItem(
+                                'folder',
+                                JSON.stringify(_data.folder)
+                            )
                             message.success(mes)
                             this.props.history.push('/homepage')
                         } else {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Layout, Modal, Form, Input, message } from 'antd'
 import './index.scss'
 import { connect } from 'react-redux'
@@ -14,6 +14,8 @@ import { setFolder } from '../../../redux/actions/user'
 const { Header, Sider, Content } = Layout
 const HomePage = props => {
     const [visible, setVisible] = useState(false)
+    const defaultFolder = JSON.parse(localStorage.getItem('folder'))
+    const [folderData, setFolderData] = useState(defaultFolder)
     const showModal = () => {
         props.form.resetFields()
         setVisible(true)
@@ -28,7 +30,6 @@ const HomePage = props => {
                 )
                     .then(res => {
                         const data = res.data
-                        console.log(data)
                         if (data.code === 0) {
                             message.success(data.message)
                             props.setFolder(data.folder)
@@ -60,6 +61,10 @@ const HomePage = props => {
             sm: { span: 20 }
         }
     }
+    useEffect(() => {
+        setFolderData(props.folder)
+        localStorage.setItem('folder', JSON.stringify(props.folder))
+    }, [props.folder])
     const { getFieldDecorator } = props.form
     return (
         <div className="home-page">
@@ -71,7 +76,7 @@ const HomePage = props => {
                         style={{ height: `calc(100% - 64px)` }}
                         renderThumbVertical={renderThumbVertical}
                     >
-                        <TreeCatalog data={props.folder} />
+                        <TreeCatalog data={folderData} />
                         <div className="btn_box">
                             <Button
                                 shape="round"
