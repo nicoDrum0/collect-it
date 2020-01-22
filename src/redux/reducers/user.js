@@ -1,7 +1,8 @@
-import { SET_FOLDER, SET_USER_ID } from '../actions/actionTypes'
+import { SET_FOLDER, SET_USER_ID, SET_USER_NAME } from '../actions/actionTypes'
 
 const initialState = {
     userId: null,
+    username: null,
     folder: null
 }
 
@@ -17,6 +18,13 @@ export default (state = initialState, action) => {
         return {
             ...state,
             userId: action.id
+        }
+    }
+
+    if (action.type === SET_USER_NAME) {
+        return {
+            ...state,
+            username: action.name
         }
     }
     return state

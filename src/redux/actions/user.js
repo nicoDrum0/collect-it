@@ -1,4 +1,4 @@
-import { SET_FOLDER, SET_USER_ID } from './actionTypes'
+import { SET_FOLDER, SET_USER_ID, SET_USER_NAME } from './actionTypes'
 
 export const setFolder = val => {
     return {
@@ -11,5 +11,12 @@ export const setUserId = id => {
     return {
         type: SET_USER_ID,
         id
+    }
+}
+
+export const setUserName = name => {
+    return {
+        type: SET_USER_NAME,
+        name
     }
 }

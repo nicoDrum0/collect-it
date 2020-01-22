@@ -10,6 +10,7 @@ import Axios from 'axios'
 import qs from 'qs'
 import SiteStore from '../../SiteStore'
 import { setFolder } from '../../../redux/actions/user'
+import HeaderComponent from '../../HeaderComponent'
 
 const { Header, Sider, Content } = Layout
 const HomePage = props => {
@@ -65,6 +66,16 @@ const HomePage = props => {
         setFolderData(props.folder)
         localStorage.setItem('folder', JSON.stringify(props.folder))
     }, [props.folder])
+    useEffect(() => {
+        emitter.addListener('logout', () => {
+            props.history.push('/login')
+        })
+        return () => {
+            emitter.removeListener('logout', () => {
+                props.history.push('/login')
+            })
+        }
+    })
     const { getFieldDecorator } = props.form
     return (
         <div className="home-page">
@@ -119,7 +130,9 @@ const HomePage = props => {
                     </Scrollbars>
                 </Sider>
                 <Layout>
-                    <Header></Header>
+                    <Header>
+                        <HeaderComponent />
+                    </Header>
                     <Content>
                         <Scrollbars
                             autoHide

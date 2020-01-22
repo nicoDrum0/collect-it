@@ -1,0 +1,21 @@
+.header {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .ant-avatar {
+        margin-right: 0.5rem;
+    }
+
+    .inline {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        .username {
+            margin-right: 0.5rem;
+        }
+    }
+}
